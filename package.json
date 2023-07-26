@@ -2,11 +2,10 @@
   "name": "challenge-one-compass",
   "version": "1.0.0",
   "main": "app.js",
-  "type": "module",
   "scripts": {
-    "start": "node dist/app.js",
+    "start": "node dist/presenters/app.js",
     "test": "jest",
-    "dev": "nodemon  -r tsconfig-paths/register --watch source/ -e ts --exec ts-node-esm source/app.ts",
+    "dev": "nodemon  -r tsconfig-paths/register --watch source/ -e ts --exec ts-node-esm source/presenters/app.ts",
     "build": "tsc -p ."
   },
   "devDependencies": {
