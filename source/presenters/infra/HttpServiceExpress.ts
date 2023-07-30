@@ -3,6 +3,9 @@ import express, { Application } from 'express';
 import { controllerList } from '../controllers';
 import { Reflection } from '@abraham/reflection';
 import { RouteItem } from '@/decorators/handlers';
+import connectMongoDB from '@/db/connect';
+
+const URL = process.env.DB_URL;
 
 export class HttpServiceExpress implements HttpServerService {
 	private readonly instance: Application;
@@ -12,7 +15,10 @@ export class HttpServiceExpress implements HttpServerService {
 	}
 
 	init(port: string): void {
+		this.instance.use(express.json());
+
 		this.registerRoutes();
+		connectMongoDB(URL ?? '');
 		this.instance.listen(port, () => console.log('Server Initialize'));
 	}
 	registerRoutes(): void {
