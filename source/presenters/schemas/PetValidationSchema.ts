@@ -1,6 +1,7 @@
 import { object, string, number } from 'yup';
 
 export const petValidationSchema = object({
+	id: number().required(),
 	name: string().required(),
 	species: string().required(),
 	carry: string().required(),
