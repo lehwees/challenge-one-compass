@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 export interface PetSchemaInterface {
+    id: number,
     name: string,
     species: string,
     carry: string,
@@ -9,6 +10,7 @@ export interface PetSchemaInterface {
 }
 
 export const PetSchema = new mongoose.Schema<PetSchemaInterface>({
+	id: Number,
 	name: String,
 	species: String,
 	carry: String,
