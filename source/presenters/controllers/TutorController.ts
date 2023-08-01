@@ -12,43 +12,43 @@ import { ObjectId } from 'mongodb';
 export class TutorController
 implements TutorControllerInterface<Request, Response>
 {
-  @Get('')
+	@Get('/tutors')
 	async getAll(req: Request, res: Response): Promise<void> {
 		try {
-			const tutors = await TutorModel.aggregate([
-				{ $unwind: { path: '$pets' } },
-				{
-					$lookup: {
-						from: 'pets',
-						localField: 'pets.petId',
-						foreignField: 'id',
-						as: 'pets',
-					},
-				},
-				{
-					$unwind: { path: '$pets' },
-				},
-				{
-					$group: { _id: '$_id', pets: { $push: '$pets' } },
-				},
-				{
-					$lookup: {
-						from: 'tutors',
-						localField: '_id',
-						foreignField: '_id',
-						as: 'tutorDetails',
-					},
-				},
-				{
-					$unwind: { path: '$tutorDetails' },
-				},
-				{
-					$addFields: { 'tutorDetails.pets': '$pets' },
-				},
-				{
-					$replaceRoot: { newRoot: '$tutorDetails' },
-				},
-			]);
+			const tutors = await TutorModel.find();
+			// 	{ $unwind: { path: '$pets' } },
+			// 	{
+			// 		$lookup: {
+			// 			from: 'pets',
+			// 			localField: 'pets.petId',
+			// 			foreignField: 'id',
+			// 			as: 'pets',
+			// 		},
+			// 	},
+			// 	{
+			// 		$unwind: { path: '$pets' },
+			// 	},
+			// 	{
+			// 		$group: { _id: '$_id', pets: { $push: '$pets' } },
+			// 	},
+			// 	{
+			// 		$lookup: {
+			// 			from: 'tutors',
+			// 			localField: '_id',
+			// 			foreignField: '_id',
+			// 			as: 'tutorDetails',
+			// 		},
+			// 	},
+			// 	{
+			// 		$unwind: { path: '$tutorDetails' },
+			// 	},
+			// 	{
+			// 		$addFields: { 'tutorDetails.pets': '$pets' },
+			// 	},
+			// 	{
+			// 		$replaceRoot: { newRoot: '$tutorDetails' },
+			// 	},
+			// ]);
 			if (!tutors) {
 				res.sendStatus(StatusCode.NOT_FOUND);
 				return;
@@ -59,31 +59,31 @@ implements TutorControllerInterface<Request, Response>
 		}
 	}
 
-  @Post('')
-  async create(req: Request, res: Response): Promise<void> {
+  @Post('/tutor')
+	async create(req: Request, res: Response): Promise<void> {
   	try {
   		const tutor = await tutorValidatorSchema.validate(req.body);
   		if (!tutor) {
   			res.sendStatus(StatusCode.UNPROCESSABLE);
   			return;
   		}
-  		const alreadyExists = await TutorModel.findOne({ email: tutor.email });
-  		if (alreadyExists) {
-  			res.sendStatus(StatusCode.UNAUTHORIZED);
-  			return;
-  		}
+  		// const alreadyExists = await TutorModel.findOne({ email: tutor.email });
+  		// if (alreadyExists) {
+  		// 	res.sendStatus(StatusCode.UNAUTHORIZED);
+  		// 	return;
+  		// }
   		await TutorModel.create(tutor);
   		res.sendStatus(StatusCode.CREATED);
   	} catch (error) {
   		res.status(StatusCode.SERVER_ERROR).send(error);
   	}
-  }
+	}
 
-  @Put('tutor/:id')
+  @Put('/tutor/:id')
   async update(req: Request, res: Response): Promise<void> {
   	try {
   		const tutorId = req.params.id;
-  		if (!tutorId || !ObjectId.isValid(tutorId)) {
+  		if (!tutorId) {
   			res.sendStatus(StatusCode.UNPROCESSABLE);
   			return;
   		}
@@ -94,20 +94,16 @@ implements TutorControllerInterface<Request, Response>
   			return;
   		}
 
-  		const tutor = await tutorValidatorSchema.validate(req.body);
-
-  		if (!tutor) {
-  			res.sendStatus(StatusCode.UNPROCESSABLE);
-  			return;
-  		}
-  		await TutorModel.findByIdAndUpdate(tutorId, tutor);
+  		const newTutor = req.body;
+  		
+  		await TutorModel.findByIdAndUpdate(tutorId, newTutor);
   		res.sendStatus(StatusCode.OK);
   	} catch (error) {
   		res.status(StatusCode.SERVER_ERROR).send(error);
   	}
   }
 
-  @Delete('tutor/:id')
+  @Delete('/tutor/:id')
   async delete(req: Request, res: Response): Promise<void> {
   	try {
   		const tutorIdDel = req.params.id;
@@ -116,22 +112,22 @@ implements TutorControllerInterface<Request, Response>
   			return;
   		}
 
-  		const tutorExists = await TutorModel.findById(tutorIdDel);
+  		const tutorExists = await TutorModel.findByIdAndDelete(tutorIdDel);
   		if (!tutorExists) {
   			res.sendStatus(StatusCode.NOT_FOUND);
   			return;
   		}
 
-  		const tutorIdValidate = await tutorValidatorSchema.validate(req.body);
-  		if (!tutorIdValidate) {
-  			res.sendStatus(StatusCode.UNPROCESSABLE);
-  		}
+  		// const tutorIdValidate = await tutorValidatorSchema.validate(req.body);
+  		// if (!tutorIdValidate) {
+  		// 	res.sendStatus(StatusCode.UNPROCESSABLE);
+  		// }
 
-  		const tutorId = await TutorModel.deleteOne();
-  		if (!tutorId) {
-  			res.sendStatus(StatusCode.BAD_REQUEST);
-  			return;
-  		}
+  		// const tutorId = await TutorModel.deleteOne();
+  		// if (!tutorId) {
+  		// 	res.sendStatus(StatusCode.BAD_REQUEST);
+  		// 	return;
+  		// }
   		res.sendStatus(StatusCode.ACCEPTED);
   	} catch (error) {
   		res.status(StatusCode.SERVER_ERROR).send(error);
