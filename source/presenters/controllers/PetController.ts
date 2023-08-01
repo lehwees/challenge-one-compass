@@ -12,7 +12,7 @@ import TutorModel from '@/models/TutorModel';
 export class PetController
 implements PetControllerInterface<Request, Response>
 {
-  @Get('')
+  @Get('/pet')
 	async getAll(req: Request, res: Response): Promise<void> {
 		try {
 			const pet = await PetModel.find();
@@ -26,7 +26,7 @@ implements PetControllerInterface<Request, Response>
 		}
 	}
 
-  @Post('/:tutorId')
+  @Post('/pet/:tutorId')
   async create(req: Request, res: Response): Promise<void> {
   	try {
   		const tutorId = req.params.tutorId;
@@ -55,7 +55,7 @@ implements PetControllerInterface<Request, Response>
   	}
   }
 
-  @Put('/:petId/tutor/:tutorId')
+  @Put('/pet/:petId/tutor/:tutorId')
   async update(req: Request, res: Response): Promise<void> {
   	try {
   		const petId = req.params.petId;
@@ -88,7 +88,7 @@ implements PetControllerInterface<Request, Response>
   	}
   }
 
-  @Delete('/:petId/tutor/:tutorId')
+  @Delete('/pet/:petId/tutor/:tutorId')
   async delete(req: Request, res: Response): Promise<void> {
   	try {
   		const petId = req.params.petId;
