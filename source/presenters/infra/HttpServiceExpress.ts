@@ -27,7 +27,7 @@ export class HttpServiceExpress implements HttpServerService {
 		controllerList.forEach((controllerClass) => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const _instance = new controllerClass() as any;
-			const basePath: string =
+			const basePath: string = '/api';
         Reflection.getMetadata('basePath', controllerClass) ?? '';
 			const routers: RouteItem[] =
         Reflection.getMetadata('routers', controllerClass) ?? [];
