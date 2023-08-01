@@ -7,7 +7,7 @@ export interface TutorSchemaInterface{
     email: string,
     date_of_birth: string,
     zip_code: string,
-    pets: {petId: number}[]
+    pets: [{petId: number}]
 }
 
 export const TutorSchema = new mongoose.Schema<TutorSchemaInterface>({
